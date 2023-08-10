@@ -83,6 +83,57 @@ def create_pie_chart_jenis_penjualan(df):
     ax.set_title('Relation between Sum of Quantity and Jenis Penjualan')
     st.pyplot(fig)
 
+def create_dual_bar_chart_qty(df):
+    st.subheader("Dual Bar Chart: Sum of Qty1 vs. Qty2 by Month")
+
+    df['tgl_jual'] = pd.to_datetime(df['tgl_jual'])
+    df['tgl_prod'] = pd.to_datetime(df['tgl_prod'])
+
+    df['month_jual'] = df['tgl_jual'].dt.month
+    df['month_prod'] = df['tgl_prod'].dt.month
+
+    grouped_df = df.groupby(['month_jual'])['qty1'].sum().reset_index().merge(
+        df.groupby(['month_prod'])['qty2'].sum().reset_index(),
+        how='outer', left_on='month_jual', right_on='month_prod', suffixes=('_jual', '_prod')
+    ).fillna(0)
+
+    ax = grouped_df.plot(x='month_jual', kind='bar', stacked=True, figsize=(10, 6))
+    ax.set_xlabel('Month')
+    ax.set_ylabel('Sum of Quantity')
+    ax.set_title('Sum of Qty1 vs. Qty2 by Month')
+    ax.legend(title='Quantity Type')
+
+    st.pyplot(plt)
+
+# Create table to show relation between prov, kategori, jenis_barang
+def create_relation_table(df):
+    st.subheader("Table: Relation between Prov, Kategori, and Jenis Barang")
+
+    relation_df = df.groupby(['prov', 'kategori', 'jenis_barang']).size().reset_index(name='count')
+    st.dataframe(relation_df)
+
+def create_dual_bar_chart_qty(df):
+    st.subheader("Dual Bar Chart: Sum of Qty1 vs. Qty2 by Month")
+
+    df['tgl_jual'] = pd.to_datetime(df['tgl_jual'])
+    df['tgl_prod'] = pd.to_datetime(df['tgl_prod'])
+
+    df['month_jual'] = df['tgl_jual'].dt.month
+    df['month_prod'] = df['tgl_prod'].dt.month
+
+    grouped_df = df.groupby(['month_jual'])['qty1'].sum().reset_index().merge(
+        df.groupby(['month_prod'])['qty2'].sum().reset_index(),
+        how='outer', left_on='month_jual', right_on='month_prod', suffixes=('_jual', '_prod')
+    ).fillna(0)
+
+    ax = grouped_df.plot(x='month_jual', kind='bar', stacked=True, figsize=(10, 6))
+    ax.set_xlabel('Month')
+    ax.set_ylabel('Sum of Quantity')
+    ax.set_title('Sum of Qty1 vs. Qty2 by Month')
+    ax.legend(title='Quantity Type')
+
+    st.pyplot(plt)
+
 def main():
     st.title("Excel Data Visualization Dashboard")
 
@@ -95,6 +146,9 @@ def main():
         create_line_chart(df)  # Create the line chart
         create_pie_chart_diskon(df)  # Create the pie chart for diskon
         create_pie_chart_jenis_penjualan(df)  # Create the pie chart for jenis_penjualan
+        create_relation_table(df) #C Create table
+        create_dual_bar_chart_qty(df)  # Create the dual bar chart for qty1 and qty2
+
 
 if __name__ == "__main__":
     main()
