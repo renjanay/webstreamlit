@@ -135,7 +135,7 @@ def create_dual_bar_chart_qty(df):
     st.pyplot(plt)
 
 def main():
-    st.title("Excel Data Visualization Dashboard")
+    st.title("Twinkle Well Data Visualization Dashboard")
 
     uploaded_file = st.file_uploader("Upload an Excel file", type=["xlsx"])
     if uploaded_file is not None:
